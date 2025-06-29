@@ -89,6 +89,7 @@ class OAuthRelay:
         resp._user_id = validated.user_id
         resp._user_login = validated.login
 
+        LOGGER.info("Dispatched 'event_oauth_authorized' from OAuth-Relay for user: %s | %s", resp.user_login, resp.user_id)
         self.client.dispatch(event="oauth_authorized", payload=resp)
 
     async def connect(self) -> None:
@@ -98,6 +99,8 @@ class OAuthRelay:
 
             self._socket = socket
             self._connected.set()
+
+        LOGGER.info("Successfully connected to OAuth-Relay.")
 
     async def reconnect(self) -> None:
         self._connected.clear()
