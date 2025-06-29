@@ -96,7 +96,7 @@ class OAuthRelay:
             socket = await session.ws_connect(self.RELAY_URL, heartbeat=10)
             session.detach()
 
-            self._sokcet = socket
+            self._socket = socket
             self._connected.set()
 
     async def reconnect(self) -> None:
@@ -125,7 +125,9 @@ class OAuthRelay:
     async def _listen(self) -> None:
         while True:
             await self._connected.wait()
+
             if not self._socket:
+                self._reconnecting = asyncio.create_task(self.reconnect())
                 continue
 
             try:
